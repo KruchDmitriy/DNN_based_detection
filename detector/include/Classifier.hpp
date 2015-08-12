@@ -1,23 +1,21 @@
-#ifndef _CLASSIFIER_HPP_
-#define _CLASSIFIER_HPP_
-
+#pragma once
+#include <string>
 #include <opencv2/core/core.hpp>
 
-struct Result
-{
+struct Result {
 	int label;
 	float confidence;
 	float confidence2;
 };
 
-class Classifier
-{
+class Classifier {
 public:
-    Classifier();
-
-    virtual Result Classify(cv::Mat &img) = 0;
-
+    Classifier(char* net_path, bool on_gpu);
+    virtual Result classify(cv::Mat &img) = 0;
+    void report();
     virtual ~Classifier();
+protected:
+    string log;
+    bool on_gpu;
+    char* net_path;
 };
-
-#endif

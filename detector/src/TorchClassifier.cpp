@@ -1,4 +1,4 @@
-#include "FacesClassifier.hpp"
+#include "TorchClassifier.hpp"
 #include <iostream>
 
 #include <opencv2/highgui/highgui.hpp>
@@ -7,8 +7,7 @@
 using namespace cv;
 using namespace std;
 
-FacesClassifier::FacesClassifier()
-{
+TorchClassifier::TorchClassifier(char* net_path, bool on_gpu) {
     L = lua_open();
     luaL_openlibs(L);
 
@@ -27,35 +26,29 @@ FacesClassifier::FacesClassifier()
     if (s != 0) reportLuaErrors(L, s);
 }
 
-FacesClassifier::~FacesClassifier()
-{
+TorchClassifier::~TorchClassifier() {
     lua_close(L);
 }
 
-void FacesClassifier::reportLuaErrors(lua_State *L, int status)
-{
-    if ( status!=0 )
-    {
+void TorchClassifier::report_lua_errors(lua_State *L, int status) {
+    if (status != 0) {
         cerr << "-- " << lua_tostring(L, -1) << endl;
         lua_pop(L, 1);
     }
 }
 
-Result FacesClassifier::Classify(Mat& img)
-{
+Result TorchClassifier::classify(Mat& img) {
     int len = img.rows * img.cols * img.channels();
     int countPixels = img.rows * img.cols;
 
     uchar *data = img.ptr<uchar>();
 
     float *tensorData = new float[len];
-    for (uint k = 0; k < img.channels(); ++k)
-    {
-        for (uint i = 0; i < img.rows; ++i) 
-        {
-            for (uint j = 0; j < img.cols; ++j) 
-            {
-                tensorData[k * countPixels + i * img.cols + j] = ((float)img.at<Vec3b>(i, j)[2-k]) / 255.0f;
+    for (uint k = 0; k < img.channels(); ++k) {
+        for (uint i = 0; i < img.rows; ++i) {
+            for (uint j = 0; j < img.cols; ++j) {
+                tensorData[k * countPixels + i * img.cols + j] =
+                    ((float)img.at<Vec3b>(i, j)[2-k]) / 255.0f;
             }
         }
     }

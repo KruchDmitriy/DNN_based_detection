@@ -24,8 +24,8 @@ add_custom_command(
 add_custom_command(
     TARGET ${FACEDETECTOR_LIBRARY}
     POST_BUILD
-    COMMAND ln -fns "${CMAKE_SOURCE_DIR}/net" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/net"
+    COMMAND ln -fns "${CMAKE_SOURCE_DIR}/../results/nn" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/nn"
     COMMENT "Adding a symbolic link to nets"
 )
 
-message( STATUS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}")
+message(STATUS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}")
